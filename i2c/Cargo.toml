@@ -19,5 +19,5 @@ all-features = true
 
 [dependencies]
 embedded-hal = "0.2.3"
-display-interface = "0.4"
+display-interface = { path = "../" }
 embedded-hal-async = { git = "https://github.com/rust-embedded/embedded-hal" }
