@@ -18,7 +18,7 @@ pub struct I2CInterface<I2C> {
 
 impl<I2C> I2CInterface<I2C>
 where
-    I2C: hal::i2c::I2c,
+    I2C: hal::i2c::I2c<u8>,
 {
     /// Create new I2C interface for communication with a display driver
     pub fn new(i2c: I2C, addr: u8, data_byte: u8) -> Self {
@@ -38,7 +38,7 @@ where
 
 impl<I2C> WriteOnlyDataCommand for I2CInterface<I2C>
 where
-    I2C: hal::i2c::I2c,
+    I2C: hal::i2c::I2c<u8>,
 {
     type SendCommandsFuture<'a> = impl Future<Output = Result<(), DisplayError>> + 'a where Self: 'a;
     type SendDataFuture<'a> = impl Future<Output = Result<(), DisplayError>> + 'a where Self: 'a;
