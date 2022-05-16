@@ -1,4 +1,6 @@
 #![no_std]
+#![feature(generic_associated_types)]
+#![feature(type_alias_impl_trait)]
 
 //! A generic display interface
 //!
@@ -6,6 +8,8 @@
 //! be consumed by display drivers. It abstracts over the different communication methods available
 //! to drive a display and allows a driver writer to focus on driving the display itself and only
 //! have to implement a single interface.
+
+use core::future::Future;
 
 pub mod prelude;
 
@@ -55,9 +59,16 @@ pub enum DataFormat<'a> {
 /// modes. It is the responsibility of implementations to activate the correct mode in their
 /// implementation when corresponding method is called.
 pub trait WriteOnlyDataCommand {
+    type SendCommandsFuture<'a>: Future<Output = Result<(), DisplayError>> + 'a
+    where
+        Self: 'a;
+    type SendDataFuture<'a>: Future<Output = Result<(), DisplayError>> + 'a
+    where
+        Self: 'a;
+
     /// Send a batch of commands to display
-    fn send_commands(&mut self, cmd: DataFormat<'_>) -> Result<(), DisplayError>;
+    fn send_commands<'a>(&'a mut self, cmd: DataFormat<'a>) -> Self::SendCommandsFuture<'a>;
 
     /// Send pixel data to display
-    fn send_data(&mut self, buf: DataFormat<'_>) -> Result<(), DisplayError>;
+    fn send_data<'a>(&'a mut self, buf: DataFormat<'a>) -> Self::SendDataFuture<'a>;
 }

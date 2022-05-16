@@ -22,8 +22,6 @@ all-features = true
 members = [
     ".",
     "i2c",
-    "parallel-gpio",
-    "spi",
 ]
 
 [patch.crates-io]
